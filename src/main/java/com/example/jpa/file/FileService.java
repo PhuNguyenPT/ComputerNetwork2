@@ -31,7 +31,7 @@ public class FileService {
     }
 
     public ResponseEntity<?> findFile(String fileName) {
-        Optional<FileResponseDTO> dto = fileRepository.findByName(fileName)
+        Optional<FileResponseDTO> dto = fileRepository.findByNameContainingIgnoreCase(fileName)
                 .map(fileMapper::toFileResponseDTO);
         if (dto.isEmpty()) {
             throw customExceptionHandler.handleFindByNameException(fileName);

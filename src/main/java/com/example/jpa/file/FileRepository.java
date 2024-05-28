@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface FileRepository extends JpaRepository<File, Integer> {
-    Optional<File> findByName(String name);
+    Optional<File> findByNameContainingIgnoreCase(String name);
     Long deleteByName(String name);
 }

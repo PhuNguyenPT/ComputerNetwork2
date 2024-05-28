@@ -1,25 +1,17 @@
 package com.example.jpa.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@SuperBuilder
-@MappedSuperclass
+@Embeddable
 public class BaseEntity {
-    @Id
-    @GeneratedValue
-    private Integer id;
-    private LocalDateTime createAt;
-    private LocalDateTime lastModifiedAt;
+    private ZonedDateTime createAt;
+    private ZonedDateTime lastModifiedAt;
     private String createdBy;
     private String lastModifyBy;
 }
