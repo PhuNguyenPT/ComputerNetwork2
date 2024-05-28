@@ -1,7 +1,7 @@
 HTTP Request Method: <br />
-POST: http://localhost:8080/files <br />
-GET: http://localhost:8080/search/{file-name} <br />
-DELETE: http://localhost:8080/files/{file-name} <br />
+POST: http://localhost:8080/files/upload <br />
+GET: http://localhost:8080/files/search/{file-name} <br />
+DELETE: http://localhost:8080/files/delete/{file-name} <br />
 
 Requirements:
 - [x] 1. HTTP Client (browser) allows user enter URL and send request to HTTP Server. HTTP Server will send to<br />
