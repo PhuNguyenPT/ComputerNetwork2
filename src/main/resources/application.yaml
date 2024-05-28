@@ -9,4 +9,6 @@ spring:
       ddl-auto: create-drop
     database: postgresql
     show-sql: true
-
+server:
+  error:
+    include-message: always
