@@ -1,41 +1,51 @@
 package com.example.jpa.file;
 
-import com.example.jpa.exception.ExceptionHandler;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.example.jpa.exception.CustomExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Service
 public class FileService {
     private final FileRepository fileRepository;
     private final FileMapper fileMapper;
-    private final ExceptionHandler exceptionHandler;
-    public FileService(FileRepository fileRepository, FileMapper fileMapper, ExceptionHandler exceptionHandler) {
+    private final CustomExceptionHandler customExceptionHandler;
+    public FileService(FileRepository fileRepository, FileMapper fileMapper, CustomExceptionHandler customExceptionHandler) {
         this.fileRepository = fileRepository;
         this.fileMapper = fileMapper;
-        this.exceptionHandler = exceptionHandler;
+        this.customExceptionHandler = customExceptionHandler;
     }
 
     public ResponseEntity<?> saveFile(MultipartFile multipartFile) {
-        var file = fileMapper.toFile(multipartFile);
         try {
-            fileRepository.save(file);
-        } catch (DataIntegrityViolationException e) {
-            return exceptionHandler.handleDataIntegrityException(e);
+            var file = fileMapper.toFile(multipartFile);
+            var savedFile = fileRepository.save(file);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    String.format("Save file %s successfully.", savedFile.getName()));
+        } catch (RuntimeException e) {
+            throw customExceptionHandler.handleUploadFileException(e, multipartFile.getOriginalFilename());
         }
-        String message = "Upload " + multipartFile.getOriginalFilename() + " successfully.";
-        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    public FileResponseDTO findFile(String fileName) {
-        return fileRepository.findByName(fileName)
-                .map(fileMapper::toFileResponseDTO)
-                .orElse(null);
+    public ResponseEntity<?> findFile(String fileName) {
+        Optional<FileResponseDTO> dto = fileRepository.findByName(fileName)
+                .map(fileMapper::toFileResponseDTO);
+        if (dto.isEmpty()) {
+            throw customExceptionHandler.handleFindByNameException(fileName);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    public Long deleteFile(String fileName) {
-        return fileRepository.deleteByName(fileName);
+    public ResponseEntity<?> deleteFile(String fileName) {
+        Long fileDeleteCount = fileRepository.deleteByName(fileName);
+        if (fileDeleteCount <= 0) {
+            throw customExceptionHandler.handleDeleteDataException(fileName);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                String.format("Delete %d file(s) %s successfully.", fileDeleteCount, fileName)
+        );
     }
 }
