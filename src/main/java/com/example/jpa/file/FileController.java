@@ -1,16 +1,12 @@
 package com.example.jpa.file;
 
-import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.http.HttpResponse;
-import java.util.List;
-
 @RestController
+@RequestMapping("/files")
 public class FileController {
 
     private final FileService fileService;
@@ -19,12 +15,11 @@ public class FileController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/files")
+    @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(
             @RequestParam("file")MultipartFile multipartFile
             ) {
-        var uploadFile = fileService.saveFile(multipartFile);
-        return ResponseEntity.status(HttpStatus.OK).body(uploadFile);
+        return fileService.saveFile(multipartFile);
     }
 
     @GetMapping("/search/{file-name}")
@@ -36,12 +31,12 @@ public class FileController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @DeleteMapping("/files/{file-name}")
+    @DeleteMapping("/delete/{file-name}")
     public ResponseEntity<?> deleteFile(
             @PathVariable("file-name") String fileName) {
         Long num = fileService.deleteFile(fileName);
         if (num > 0) {
-            return ResponseEntity.status(HttpStatus.OK).body(new String("Delete " + num + " " + fileName));
+            return ResponseEntity.status(HttpStatus.OK).body("Delete " + num + " " + fileName);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
