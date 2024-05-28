@@ -11,3 +11,4 @@ HTTP Client the file requested. The file can be a simple file (txt file) (4 poin
 - [x] 4. Your grade is added +1/10 if your server program supports many clients simultaneously.
 - [x] 5. Your HTTP system supports POST method, +1/10 will be added into your grade.
 - [x] 6. Your HTTP system supports DELETE method, +1/10 will be added into your grade.
+Total points: 8/10
