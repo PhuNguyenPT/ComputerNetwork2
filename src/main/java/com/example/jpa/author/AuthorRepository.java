@@ -9,10 +9,6 @@ import java.util.List;
 
 public interface AuthorRepository extends JpaRepository <Author, Integer> {
     // update Author a set a.age = 22 where a.id = 1
-    @Modifying
-    @Transactional
-    @Query("update author a set a.age = :age where a.id = :id")
-    Long updateAuthor(int age, int id);
     // select * from author where first_name = 'abc'
     List<Author> findAllByFirstName(String fn);
     // select * from author where first_name = 'ab'
