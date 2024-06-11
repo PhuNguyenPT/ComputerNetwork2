@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FileService {
@@ -30,9 +32,11 @@ public class FileService {
         }
     }
 
-    public ResponseEntity<?> findFile(String fileName) {
-        Optional<FileResponseDTO> dto = fileRepository.findByNameContainingIgnoreCase(fileName)
-                .map(fileMapper::toFileResponseDTO);
+    public ResponseEntity<?> findFiles(String fileName) {
+        List<FileResponseDTO> dto = fileRepository.findByNameContainingIgnoreCase(fileName)
+                .stream()
+                .map(fileMapper::toFileResponseDTO)
+                .collect(Collectors.toUnmodifiableList());
         if (dto.isEmpty()) {
             throw customExceptionHandler.handleFindByNameException(fileName);
         }
